@@ -142,7 +142,7 @@
 
   <select id="selectAll" resultType="com.xinyunkeji.bigdata.convenience.model.entity.Article">
     SELECT
-        a.*,b.`name` AS userName
+        a.*,b.name AS userName
     FROM
         article AS a LEFT JOIN `user` AS b ON b.id=a.user_id
     WHERE

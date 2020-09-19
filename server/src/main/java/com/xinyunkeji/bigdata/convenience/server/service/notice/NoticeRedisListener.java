@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * 商户公告监听器
  * @author Yuezejian
  * @date 2020年 08月25日 21:23:28
  */

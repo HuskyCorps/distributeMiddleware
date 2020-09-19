@@ -39,7 +39,7 @@ public class UserVipService {
         if (res > 0 ) {
             //假设（vipDay = 20,即会员充值20天）,20天后失效：第一次提醒 ttl = vipDay - x; 第二次提醒 ttl = vipDay
             //1.到期前N天提醒 2.到期后提醒
-            RMapCache<String,Integer> rMapCache = redissonClient.getMapCache(Constant.RedissonMsgCodeKey);
+            RMapCache<String,Integer> rMapCache = redissonClient.getMapCache(Constant.RedissonUserVIPKey);
 
             //TODO:第一次提醒,x默认值10，提前10天提醒
             String key = vip.getId() + Constant.SplitCharUserVip + Constant.VipExpireFlg.First.getType();//vipId_1 过期前提醒

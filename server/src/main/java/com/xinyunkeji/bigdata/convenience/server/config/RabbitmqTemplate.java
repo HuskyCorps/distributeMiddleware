@@ -1,10 +1,9 @@
 package com.xinyunkeji.bigdata.convenience.server.config;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.xinyunkeji.bigdata.convenience.model.entity.MsgLog;
 import com.xinyunkeji.bigdata.convenience.server.enums.Constant;
 import com.xinyunkeji.bigdata.convenience.server.service.log.MsgLogService;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
@@ -62,26 +61,22 @@ public class RabbitmqTemplate {
             * @param ack 确认结果
             * @param cause 失败原因
             */
+            @SneakyThrows
             @Override
             public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-               if (ack) {
-                   try {
-                       log.info("消息发送到Exchange--成功:correlationData={},ask={},cause={}",correlationData,true,cause);
-                      //TODO:成功发送到Exchange中后，更新消息发送的状态为投递成功状态
-                       String msgId = correlationData.getId();
-                       MsgLog msgLog = new MsgLog(msgId, Constant.DELIVER_SUCCESS);
-                       msgLogService.updateLog(msgLog);
-                   } catch (Exception e) {
-                       log.info("消息发送到Exchange--成功,日志记录异常",e.getMessage());
+                log.info("消息发送到Exchange————情况反馈:唯一标识：correlationData={},消息确认：ask={},失败原因：cause={}",correlationData,true,cause);
+               if (correlationData != null && StringUtils.isNotBlank(correlationData.getId())) {
+                   if (ack) {
+                       //TODO:成功发送到Exchange中后，更新消息发送的状态为投递————成功状态
+                       msgLogService.updateStatus(correlationData.getId(), Constant.DELIVER_SUCCESS);
+                   } else {
+                       //TODO:发送到Exchange中失败后，更新消息发送的状态为投递————失败状态
+                       msgLogService.updateStatus(correlationData.getId(), Constant.DELIVER_FALSE);
+
+                       log.info("消息发送到Exchange--失败:correlationData={},ask={},cause={}", correlationData, true, cause);
+
                    }
-
-
-               } else {
-                   log.info("消息发送到Exchange--失败:correlationData={},ask={},cause={}",correlationData,true,cause);
-
                }
-
-
             }
         });
         //ReturnCallback   消息是否从Exchange路由到Queue, 注意: 这是一个失败回调,
@@ -98,8 +93,9 @@ public class RabbitmqTemplate {
            @Override
            public void returnedMessage(Message message, int replyCode,
                                        String replyText, String exchange, String rountingKey) {
-                   log.info("消息由Exchange发送到Queue时失败:message={},replyCode={},replyText={},exchange={},rountingKey={}",
+                   log.warn("消息由Exchange发送到Queue时失败:message={},replyCode={},replyText={},exchange={},rountingKey={}",
                            message,replyCode,replyText,exchange,rountingKey);
+
            }
 
        });
@@ -109,6 +105,7 @@ public class RabbitmqTemplate {
 
     /**
      * 单一实例消费者（一条队列只会有一个消费者，一条消费者线程监听）
+     * 当前仅日志记录用了此例，AcknowledgeMode.NONE
      * @return
      */
     @Bean(name = "singleListenerContainer")
@@ -122,7 +119,7 @@ public class RabbitmqTemplate {
         //确认消费模式-NONE自动确认 -AUTO根据情况确认 -MANUAL手动确认
         //默认情况下消息消费者是自动 ack （确认）消息的，需要设置为手动确认
         // 原因是：自动确认会在消息发送给消费者后立即确认，这样存在丢失消息的可能。
-        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        factory.setAcknowledgeMode(AcknowledgeMode.NONE);
         //设置并发
         factory.setConcurrentConsumers(1);
         //最大并发
@@ -134,6 +131,7 @@ public class RabbitmqTemplate {
 
     /**
      * 多实例消费者（一条队列有多个消费者实例，多个消费者线程进行监听和出路）
+     * 当前仅邮件发送用来此例，AcknowledgeMode.MANUAL
      * @return
      */
     @Bean(name = "multiListenerContainer")
@@ -148,27 +146,6 @@ public class RabbitmqTemplate {
         factory.setPrefetchCount(env.getProperty("spring.rabbitmq.listener.simple.prefetch",int.class));
         return factory;
     }
-
-//    /**
-//     * 确认消息
-//     * @param message 消息
-//     * @param channel 频道
-//     * @param deliveryTag 传送标签唯一标识 ID
-//     */
-//    @RabbitHandler
-//    public void processMessage2(String message, Channel channel, @Header Map<String,Object> map ) {
-//        log.info("",message);
-//        if (map.get(""))
-//        try {
-//            //basicAck has two params
-//            //deliverTag:它代表了 RabbitMQ 向该 Channel 投递的这条消息的唯一标识 ID，是一个单调递增的正整数，delivery tag 的范围仅限于 Channel
-//            //multiple:为了减少网络流量，手动确认可以被批处理，
-//            // 当该参数为 true 时，则可以一次性确认 delivery_tag 小于等于传入值的所有消息
-//            channel.basicAck(deliveryTag,false);
-//        } catch (IOException e) {
-//            log.info("",e.getStackTrace());
-//        }
-//    }
 
     /**
      * 日志记录————预先创建交换机、路由及其绑定

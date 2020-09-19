@@ -22,25 +22,22 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate redisTemplate() {
-//        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("redis-config.xml");
-//        RedisTemplate redisTemplate = applicationContext.getBean(RedisTemplate.class);
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         //设置key/value的序列化策略
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         //也可以使用new JdkSerializationRedisSerializer(),反序列化时注意匹配
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-//        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
-        //针对hash存储的key的序列化策略
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 
         //开启事务的支持
-//        redisTemplate.setEnableTransactionSupport(true);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
 
     }
 
+    // class StringRedisTemplate extends RedisTemplate<String, String>
+    //是子类
     @Bean
     public StringRedisTemplate stringRedisTemplate() {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate(connectionFactory);

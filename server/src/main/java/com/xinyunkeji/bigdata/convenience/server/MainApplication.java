@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ImportResource(value = {"classpath:spring/spring-jdbc.xml"})
 @MapperScan(basePackages = "com.xinyunkeji.bigdata.convenience.model.mapper")
 @EnableAsync
-//@EnableScheduling
+@EnableScheduling
 public class MainApplication extends SpringBootServletInitializer {
 
     @Override

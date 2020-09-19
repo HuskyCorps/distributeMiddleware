@@ -15,6 +15,11 @@ public interface ArticlePraiseMapper {
 
     int insert(ArticlePraise record);
 
+    /**
+     * 新增文章点赞记录
+     * @param record
+     * @return
+     */
     int insertSelective(ArticlePraise record);
 
     ArticlePraise selectByPrimaryKey(Integer id);

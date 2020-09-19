@@ -31,7 +31,8 @@ public class Article implements Serializable{
 
     private Date updateTime;
 
-
-    //临时字段-用户姓名
+    /**
+     * 临时字段-用户姓名
+     */
     private String userName;
 }

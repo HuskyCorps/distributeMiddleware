@@ -17,7 +17,9 @@ public enum StatusCode {
     Fail(500,"false"),
     InvalidParams(300,"非法的参数！"),
     UserNameHasExist(301,"用户名已存在"),
-    UserEmailHasExist(302,"用户邮箱已存在")
+    UserEmailHasExist(302,"用户邮箱已存在"),
+    InvalidArticleId(303,"非法文章ID"),
+    InvalidCurrentUserId(304,"非法用户ID")
     ;
 
     private Integer code;

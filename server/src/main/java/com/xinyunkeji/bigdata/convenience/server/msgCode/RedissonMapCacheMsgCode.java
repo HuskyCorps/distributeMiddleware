@@ -59,7 +59,7 @@ public class RedissonMapCacheMsgCode implements ApplicationRunner, Ordered {
                 public void onExpired(EntryEvent<String, String> entryEvent) {
                     try {
                         String phone = entryEvent.getKey();
-                        String msgCode = entryEvent.getValue();
+                        String msgCode = String.valueOf(entryEvent.getValue());
                         log.info("————当前手机号：{}，对应的验证码：{}", phone, msgCode);
 
                         if (StringUtils.isNotBlank(phone) && StringUtils.isNotBlank(msgCode)) {

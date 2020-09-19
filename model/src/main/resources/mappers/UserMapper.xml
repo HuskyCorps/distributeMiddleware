@@ -79,9 +79,9 @@
     from user where email=#{email}
   </select>
 
-  <select id="selectNamesById" resultType="java.lang.String">
+  <select id="selectNamesById" resultType="com.xinyunkeji.bigdata.convenience.model.entity.User">
     SELECT
-      GROUP_CONCAT(`name`)
+      `name`
     FROM
       `user`
     WHERE

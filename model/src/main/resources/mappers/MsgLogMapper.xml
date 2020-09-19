@@ -23,6 +23,16 @@
     from Msg_log
     where msg_id = #{msgId,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectTimeoutMsg" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from Msg_log
+    where status = #{deliverLoading}
+    or status = #{deliverFalse}
+    or status = #{deliverSuccess}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from Msg_log
     where msg_id = #{msgId,jdbcType=VARCHAR}
@@ -136,4 +146,20 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where msg_id = #{msgId,jdbcType=VARCHAR}
   </update>
+
+  <update id="updateTryCount" >
+    update Msg_log
+    set try_count = #{tryCount},
+      next_try_time = #{nextTryTime},
+      update_time = #{nextTryTime}
+    where msg_id = #{msgId}
+  </update>
+
+  <update id="updateStatus" >
+    update Msg_log
+    set   status = #{status}
+    where msg_id = #{msgId}
+  </update>
+
+
 </mapper>

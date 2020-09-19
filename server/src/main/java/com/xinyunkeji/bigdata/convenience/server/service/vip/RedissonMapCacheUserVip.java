@@ -4,6 +4,7 @@ import com.xinyunkeji.bigdata.convenience.model.entity.UserVip;
 import com.xinyunkeji.bigdata.convenience.model.mapper.UserVipMapper;
 import com.xinyunkeji.bigdata.convenience.server.enums.Constant;
 import com.xinyunkeji.bigdata.convenience.server.service.mail.MailService;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
@@ -43,7 +44,7 @@ public class RedissonMapCacheUserVip implements ApplicationRunner, Ordered {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("不间断执行自定义操作——————————————————————————————order1");
+        log.info("不间断执行自定义操作—————————————vip过期提醒—————————————————order1");
         this.listenUserVip();
 
     }
@@ -54,10 +55,11 @@ public class RedissonMapCacheUserVip implements ApplicationRunner, Ordered {
     }
 
     //监听会员过期的数据 1.到期前N天提醒 2.到期后的提醒 需要给相应的用户发送通知（邮件）
-    private void listenUserVip() {
+    private void listenUserVip() throws Exception{
         RMapCache<String , Integer> rMapCache = redissonClient.getMapCache(Constant.RedissonUserVIPKey);
         rMapCache.addListener(new EntryExpiredListener<String,Integer>() {
 
+            @SneakyThrows
             @Override
             public void onExpired(EntryEvent<String, Integer> entryEvent) {
                 //key = 充值记录id -类型
@@ -78,6 +80,7 @@ public class RedissonMapCacheUserVip implements ApplicationRunner, Ordered {
                            String content=String.format(env.getProperty("vip.expire.first.content"),vip.getPhone());
                            mailService.sendSimpleEmail(env.getProperty("vip.expire.first.subject"),content,vip.getEmail());
                        } else {
+                           //设置数据库內会员信息失效
                           int res = vipMapper.updateExpireVip(id);
                            if (res > 0) {
                                String content=String.format(env.getProperty("vip.expire.end.content"),vip.getPhone());

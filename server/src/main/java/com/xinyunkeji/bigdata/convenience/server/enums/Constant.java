@@ -33,14 +33,15 @@ public class Constant {
     public static final String RedisCacheBeatLockKey="SpringBootRedis:LockKey:";
 
 
-    public static final String RedisArticlePraiseUser ="SpringBootRedis:Article:Praise:User:V6:";
+    public static final String RedisArticlePraiseUser ="SpringBootRedis:Article:Praise:User:V2";
 
-    public static final String RedisArticlePraiseHashKey ="SpringBootRedis:Hash:Article:Praise:V6";
+    public static final String RedisArticlePraiseHashKey ="SpringBootRedis:Hash:Article:Praise:V2";
 
-    public static final String RedisArticlePraiseSortKey ="SpringBootRedis:Hash:Article:Sort:V6";
+    public static final String RedisArticlePraiseSortKey ="SpringBootRedis:Hash:Article:Sort:V2";
 
-    public static final String RedisArticleUserPraiseKey ="SpringBootRedis:Hash:Article:User:Praise:V6";
+    public static final String RedisArticleUserPraiseKey ="SpringBootRedis:Hash:Article:User:Praise:V2";
 
+    public static final String SplitChar = "_";
 
     public static final String RedisTopicNameEmail="SpringBootRedisTopicEmailInfo";
 
@@ -56,20 +57,39 @@ public class Constant {
 
     public static final String SplitCharUserVip="-";
 
-//  发送状态: 0投递中 1投递成功 2投递失败 3已消费
+    /**
+     * 邮件发送状态: 0投递中 1投递成功 2投递失败 3已消费
+     */
     public static final Long DELIVER_LOADING = 0L;
 
     public static final Long DELIVER_SUCCESS = 1L;
 
-    public static final Long CONSUME_FALSE = 2L;
+    public static final Long DELIVER_FALSE = 2L;
 
     public static final Long CONSUME_SUCCESS = 3L;
 
-    //企业微信消息推送（HuskyYue测试用例：消息推送 AgentId: 1000002 ）
+    public static final Long CONSUME_FALSE = 4L;
+
+    public static final Long MAIL_RESEND_MAX_TIME = 3L;
+
+    /**
+     * 10秒
+     */
+    public static final Long NEXT_TRY_TIME_AFTER = 10000L;
+
+    /**
+     * 企业微信消息推送（HuskyYue测试用例：消息推送 AgentId: 1000002 ）
+     */
     public static String WXApiUrl = "https://qyapi.weixin.qq.com/cgi-bin/";
     public static String corpId = "wwe376f3d6cf5d6422";
-    public static String corpSecret = "3uPlI2-KmOot5SYDLQN22SotizLGi4hPCbJOSD5O_TY";//消息推送
-    public static String corpSecretForPublicMessage = "";//公告
+    /**
+     * 消息推送
+     */
+    public static String corpSecret = "3uPlI2-KmOot5SYDLQN22SotizLGi4hPCbJOSD5O_TY";
+    /**
+     * 公告
+     */
+    public static String corpSecretForPublicMessage = "";
 
 
 

@@ -28,5 +28,5 @@ public interface UserMapper {
 
     User selectByEmail(@Param("email") String email);
 
-    String selectNamesById(@Param("ids") String ids);
+    List<User> selectNamesById(@Param("ids") String ids);
 }

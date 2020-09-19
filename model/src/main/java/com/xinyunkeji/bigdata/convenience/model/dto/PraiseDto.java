@@ -17,15 +17,21 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class PraiseDto implements Serializable {
-    //当前用户id
+    /**
+     * 当前用户id
+     */
    @NotNull(message = "当前用户id不能为为空！")
     private Integer userId;
 
-    //文章id
+    /**
+     * 文章id
+     */
     @NotNull(message = "当前文章id不能为为空！")
     private Integer articleId;
 
-    //文章标题 ~ 开发技巧 ~ 服务于排行榜(如微博的热搜，只显示其标题，而不需要再根据id查询db获取标题...)
+    /**
+     * 文章标题 ~ 开发技巧 ~ 服务于排行榜(如微博的热搜，只显示其标题，而不需要再根据id查询db获取标题...)
+     */
     @NotBlank(message = "当前文章标题不能为空！")
     private String title;
 
@@ -33,5 +39,9 @@ public class PraiseDto implements Serializable {
         this.userId = userId;
         this.articleId = articleId;
         this.title = title;
+    }
+
+    public Integer getUserId() {
+        return userId;
     }
 }
